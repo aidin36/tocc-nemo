@@ -75,24 +75,33 @@ static void on_tocc_import_activate(NemoMenuItem* item,
   GList* file_iterator;
   char** files_array;
   int array_index = 0;
+  int files_size;
 
   // Getting list of selected files from item's data.
   files = g_object_get_data((GObject*)item, "tocc_extension_files");
+  files_size = g_list_length(files);
 
-  files_array = malloc(sizeof(char*) * g_list_length(files));
+  if (files_size == 0)
+  {
+    // No file selected. Strange, but may happen.
+    return;
+  }
+
+  // Allocating memory for the array of files.
+  files_array = malloc(sizeof(char*) * files_size);
 
   for (file_iterator = files; file_iterator != NULL; file_iterator = file_iterator->next)
   {
-    NemoFileInfo* file = NEMO_FILE_INFO(file_iterator->data);
+    NemoFileInfo* file_info = NEMO_FILE_INFO(file_iterator->data);
 
-    GFile* gfile = (GFile*)nemo_file_info_get_location(file);
+    GFile* gfile = (GFile*)nemo_file_info_get_location(file_info);
 
     files_array[array_index] = g_file_get_path(gfile);
     array_index++;
   }
 
   // Showing the import dialog to user.
-  tocc_nemo_import_files(files_array);
+  tocc_nemo_import_files(files_array, files_size);
 }
 
 static void on_tocc_item_data_destroyed(gpointer data)

@@ -20,6 +20,6 @@
 #ifndef TOCC_NEMO_MAIN_DIALOG_H_INCLUDED
 #define TOCC_NEMO_MAIN_DIALOG_H_INCLUDED
 
-void tocc_nemo_importer_dialog_show(char** files);
+void tocc_nemo_importer_dialog_show(char** files_array, int array_size);
 
 #endif /* TOCC_NEMO_MAIN_DIALOG_H_INCLUDED */

@@ -25,7 +25,7 @@
  * It will show the dialog in a separate thread, and won't block
  * the main thread.
  */
-void tocc_nemo_import_files(char** files_array);
+void tocc_nemo_import_files(char** files_array, int array_size);
 
 
 #endif /* TOCC_NEMO_IMPORTER_H_INCLUDED */

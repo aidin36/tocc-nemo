@@ -18,36 +18,10 @@
  */
 
 #include "importer/importer.h"
-
-//#include <stdlib.h>
-//#include <pthread.h>
-
 #include "importer/main_dialog.h"
 
 
-/*
- * Shows the import dialog to the user.
- */
-//void* tocc_nemo_show_import_dialog(void* arg)
-//{
-//  char** files_array = (char**)arg;
-//
-//  tocc_nemo_importer_dialog_show(files_array);
-//
-//  //free(files_array);
-//}
-
-void tocc_nemo_import_files(char** files_array)
+void tocc_nemo_import_files(char** files_array, int array_size)
 {
-  // Creating new thread. (We should do this, or else we will block the
-  // main thread of Nemo/Nautilus.
-  //pthread_t* thread_id;
-
-  //int result = pthread_create(thread_id, NULL, tocc_nemo_show_import_dialog, files_array);
-  //if (result != 0)
-  //{
-    //Print error and exit.
-  //}
-
-  tocc_nemo_importer_dialog_show(files_array);
+  tocc_nemo_importer_dialog_show(files_array, array_size);
 }
