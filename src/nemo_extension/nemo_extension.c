@@ -23,9 +23,13 @@
  * a window for importing files into Tocc.
  */
 
+#include <stdlib.h>
 #include <libnemo-extension/nemo-menu-provider.h>
 #include <orbit/orb-core/orb-core.h>
 #include <orbit/orb-core/allocators.h>
+
+#include "importer/importer.h"
+
 
 /*
  * Extension Classes.
@@ -68,19 +72,32 @@ static void on_tocc_import_activate(NemoMenuItem* item,
                                     gpointer user_data)
 {
   GList* files;
-  GList* l;
+  GList* file_iterator;
+  char** files_array;
+  int array_index = 0;
 
-  // Getting list of selected files.
+  // Getting list of selected files from item's data.
   files = g_object_get_data((GObject*)item, "tocc_extension_files");
 
-  for (l = files; l != NULL; l = l->next)
+  files_array = malloc(sizeof(char*) * g_list_length(files));
+
+  for (file_iterator = files; file_iterator != NULL; file_iterator = file_iterator->next)
   {
-    NemoFileInfo* file = NEMO_FILE_INFO(file);
-    char* name;
-    name = nemo_file_info_get_name(file);
-    g_print ("doing stuff with %s\n", name);
-    g_free(name);
+    NemoFileInfo* file = NEMO_FILE_INFO(file_iterator->data);
+
+    GFile* gfile = (GFile*)nemo_file_info_get_location(file);
+
+    files_array[array_index] = g_file_get_path(gfile);
+    array_index++;
   }
+
+  // Showing the import dialog to user.
+  tocc_nemo_import_files(files_array);
+}
+
+static void on_tocc_item_data_destroyed(gpointer data)
+{
+  g_list_free((GList*)data);
 }
 
 /*
@@ -91,6 +108,18 @@ GList* tocc_extension_get_file_items(NemoMenuProvider* provider,
                                      GtkWidget* window,
                                      GList* files)
 {
+  GList* files_iterator;
+
+  for (files_iterator = files; files_iterator != NULL; files_iterator = files_iterator->next)
+  {
+    if (nemo_file_info_is_directory(files_iterator->data))
+    {
+      // We don't want to add this item to menu when user right-click on
+      // a directory.
+      return NULL;
+    }
+  }
+
   NemoMenuItem* item;
   GList* result;
 
@@ -101,14 +130,13 @@ GList* tocc_extension_get_file_items(NemoMenuProvider* provider,
                              NULL /* icon name */);
 
   // Assigning a call-back for `activate' signal (e.g. when menu clicked).
-  g_signal_connect (item, "activate", G_CALLBACK(on_tocc_import_activate), provider);
+  g_signal_connect(item, "activate", G_CALLBACK(on_tocc_import_activate), NULL);
 
-  // Telling Nemo that when menu-item activated, put selected files in
-  // `nemo_extension_files' attribute.
+  // Putting selected file in the item's data.
   g_object_set_data_full((GObject*)item,
                          "tocc_extension_files",
-                         NULL,
-                         (GDestroyNotify)nemo_file_info_list_free);
+                         g_list_copy(files),
+                         (GDestroyNotify)on_tocc_item_data_destroyed);
 
   result = g_list_append(NULL, item);
 
