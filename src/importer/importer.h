@@ -24,7 +24,9 @@
  * Imports specified files into Tocc Managed File System,
  * and assigns the specified tags to it.
  */
-void tocc_nemo_import_files(char** files_array, int file_array_size,
+void tocc_nemo_import_files(char* base_path,
+                            char** files_array,
+                            int file_array_size,
                             char* tags_string);
 
 

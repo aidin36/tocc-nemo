@@ -23,7 +23,9 @@
 #include "utils/memory_utils.h"
 
 
-void tocc_nemo_import_files(char** files_array, int file_array_size,
+void tocc_nemo_import_files(char* base_path,
+                            char** files_array,
+                            int file_array_size,
                             char* tags_string)
 {
   char** tags_array;
