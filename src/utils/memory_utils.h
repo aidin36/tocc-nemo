@@ -17,15 +17,15 @@
  * along with Tocc-nemo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOCC_NEMO_IMPORTER_H_INCLUDED
-#define TOCC_NEMO_IMPORTER_H_INCLUDED
+#ifndef TOCC_NEMO_MEMORY_UTILS_H_INCLUDED
+#define TOCC_NEMO_MEMORY_UTILS_H_INCLUDED
+
+#include <stdlib.h>
 
 /*
- * Imports specified files into Tocc Managed File System,
- * and assigns the specified tags to it.
+ * Allocates a memory, using `malloc' func,
+ * and checks for errors.
  */
-void tocc_nemo_import_files(char** files_array, int file_array_size,
-                            char* tags_string);
+void* allocate_memory(size_t size);
 
-
-#endif /* TOCC_NEMO_IMPORTER_H_INCLUDED */
+#endif /* TOCC_NEMO_MEMORY_UTILS_H_INCLUDED */

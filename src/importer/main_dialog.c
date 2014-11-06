@@ -19,7 +19,39 @@
 
 #include "importer/main_dialog.h"
 
+#include <stdlib.h>
 #include <gtk/gtk.h>
+
+
+struct ClickedButtonData
+{
+  GtkWidget* entry;
+  GtkWidget* main_window;
+  char** files_array;
+  int array_size;
+};
+
+
+void tocc_nemo_import_clicked(GtkButton* button, gpointer user_data)
+{
+  struct ClickedButtonData* data = (struct ClickedButtonData*)user_data;
+
+  // Reading entry's text.
+  GtkEntryBuffer* entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(data->entry));
+
+  if (gtk_entry_buffer_get_length(entry_buffer) == 0)
+  {
+    // TODO: Show an error message.
+  }
+
+  const char* entry_text = gtk_entry_buffer_get_text(entry_buffer);
+
+  // Importing files into Tocc.
+  tocc_nemo_import_files(data->files_array, data->array_size, entry_text);
+
+  // Terminating application.
+  gtk_main_quit();
+}
 
 
 void tocc_nemo_importer_dialog_show(char** files_array, int array_size)
@@ -64,18 +96,31 @@ void tocc_nemo_importer_dialog_show(char** files_array, int array_size)
   hbox = gtk_hbox_new(FALSE, 3);
   label = gtk_label_new("Tags:");
   entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(entry), 512);
   gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
   gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 3);
   gtk_box_pack_start(GTK_BOX(main_box), hbox, FALSE, FALSE, 5);
 
   // Creating third line: Buttons.
+  struct ClickedButtonData clicked_button_data;
+  clicked_button_data.entry = entry;
+  clicked_button_data.files_array = files_array;
+  clicked_button_data.array_size = array_size;
+
   hbox = gtk_hbox_new(FALSE, 3);
   buttons_hbox = gtk_hbox_new(FALSE, 3);
   // This empty hbox is added, to keep the buttons right-aligned.
   gtk_box_pack_start(GTK_BOX(buttons_hbox), hbox, TRUE, FALSE, 3);
   button = gtk_button_new_with_label("Import");
+  g_signal_connect(button, "clicked",
+                   G_CALLBACK(tocc_nemo_import_clicked),
+                   (gpointer)&clicked_button_data);
   gtk_box_pack_start(GTK_BOX(buttons_hbox), button, FALSE, FALSE, 5);
   button = gtk_button_new_with_label("Cancel");
+  // Terminates the GTK loop on click.
+  g_signal_connect(button, "clicked",
+                   G_CALLBACK(gtk_main_quit),
+                   NULL);
   gtk_box_pack_start(GTK_BOX(buttons_hbox), button, FALSE, FALSE, 3);
   gtk_box_pack_start(GTK_BOX(main_box), buttons_hbox, FALSE, FALSE, 3);
 
@@ -84,4 +129,10 @@ void tocc_nemo_importer_dialog_show(char** files_array, int array_size)
 
   // Staring Gtk main loop.
   gtk_main();
+
+  // Freeing resources.
+  free(files_array);
+  // Calling destroy on Window give me an assertion. But if I don't call this,
+  // none of the widgets will free.
+  gtk_widget_destroy(window);
 }

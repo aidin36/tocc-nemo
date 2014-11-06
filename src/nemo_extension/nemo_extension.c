@@ -28,7 +28,8 @@
 #include <orbit/orb-core/orb-core.h>
 #include <orbit/orb-core/allocators.h>
 
-#include "importer/importer.h"
+#include "utils/memory_utils.h"
+#include "importer/main_dialog.h"
 
 
 /*
@@ -88,7 +89,7 @@ static void on_tocc_import_activate(NemoMenuItem* item,
   }
 
   // Allocating memory for the array of files.
-  files_array = malloc(sizeof(char*) * files_size);
+  files_array = allocate_memory(sizeof(char*) * files_size);
 
   for (file_iterator = files; file_iterator != NULL; file_iterator = file_iterator->next)
   {
@@ -101,7 +102,7 @@ static void on_tocc_import_activate(NemoMenuItem* item,
   }
 
   // Showing the import dialog to user.
-  tocc_nemo_import_files(files_array, files_size);
+  tocc_nemo_importer_dialog_show(files_array, files_size);
 }
 
 static void on_tocc_item_data_destroyed(gpointer data)
