@@ -21,8 +21,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <gtk/gtk.h>
+#include "utils/terminate.h"
 #include "utils/memory_utils.h"
+#include "utils/message_box.h"
 
 
 struct ClickedButtonData
@@ -43,17 +46,27 @@ void save_base_path(const char* base_path)
   FILE* setting_file_d = fopen(setting_file,  "w");
   if (setting_file_d == NULL)
   {
-    // TODO: Show an error message.
-    // Note: errno is set.
+    fputs("Could not open config file to write: ", stderr);
+    fputs(strerror(errno), stderr);
+    fputs("\n", stderr);
+
+    tocc_nemo_show_error("Could not open config file to write.");
+    tocc_nemo_terminate();
   }
   if (fputs(base_path, setting_file_d) <= 0)
   {
-    // TODO: Show an error message.
+    fputs("Couldn't write to config file.\n", stderr);
+    tocc_nemo_show_error("Couldn't write to config file.");
+    tocc_nemo_terminate();
   }
   if (fclose(setting_file_d) != 0)
   {
-    // TODO: Show an error message.
-    // Note: errno is set.
+    fputs("Could not close config file after writing to it: ", stderr);
+    fputs(strerror(errno), stderr);
+    fputs("\n", stderr);
+
+    tocc_nemo_show_error("Could not close config file after writing to it.");
+    tocc_nemo_terminate();
   }
 }
 
@@ -72,16 +85,23 @@ char* load_base_path()
     return NULL;
   }
 
-  char* buffer = allocate_memory(255 * sizeof(char));
+  // One extra char added to size, because of '\0'.
+  char* buffer = allocate_memory(256 * sizeof(char));
 
   if (fgets(buffer, 255, setting_file_d) == NULL)
   {
-    // TODO: Show an error message.
+    fputs("Couldn't read from config file.\n", stderr);
+    tocc_nemo_show_error("Couldn't read from config file.");
+    tocc_nemo_terminate();
   }
   if (fclose(setting_file_d) != 0)
   {
-    // TODO: Show an error message.
-    // Note: errno is set.
+    fputs("Could not close config file after reading it: ", stderr);
+    fputs(strerror(errno), stderr);
+    fputs("\n", stderr);
+
+    tocc_nemo_show_error("Could not close config file after reading it.");
+    tocc_nemo_terminate();
   }
 
   return buffer;
@@ -96,7 +116,8 @@ void tocc_nemo_import_clicked(GtkButton* button, gpointer user_data)
 
   if (gtk_entry_buffer_get_length(entry_buffer) == 0)
   {
-    // TODO: Show an error message.
+    tocc_nemo_show_error("Please enter one tag, at least.");
+    return;
   }
 
   const char* tags_string = gtk_entry_buffer_get_text(entry_buffer);
@@ -106,7 +127,8 @@ void tocc_nemo_import_clicked(GtkButton* button, gpointer user_data)
 
   if (gtk_entry_buffer_get_length(entry_buffer) == 0)
   {
-    // TODO: Show an error message.
+    tocc_nemo_show_error("Please enter the base path.");
+    return;
   }
 
   const char* base_path_string = gtk_entry_buffer_get_text(entry_buffer);
@@ -228,7 +250,6 @@ void tocc_nemo_importer_dialog_show(char** files_array, int array_size)
   }
 
   // Freeing resources.
-  free(files_array);
   free(base_path);
   // Calling destroy on Window give me an assertion. But if I don't call this,
   // none of the widgets will free.

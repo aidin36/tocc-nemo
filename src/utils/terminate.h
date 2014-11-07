@@ -17,21 +17,12 @@
  * along with Tocc-nemo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils/memory_utils.h"
+#ifndef TOCC_NEMO_TERMINATE_H_INCLUDED
+#define TOCC_NEMO_TERMINATE_H_INCLUDED
 
-#include <stdio.h>
-#include <utils/terminate.h>
+/*
+ * Terminates the current operation. (current thread.)
+ */
+void tocc_nemo_terminate();
 
-
-void* allocate_memory(size_t size)
-{
-  void* result = malloc(size);
-
-  if (result == NULL)
-  {
-    fputs("Could not allocate memory\n", stderr);
-    tocc_nemo_terminate();
-  }
-
-  return result;
-}
+#endif /* TOCC_NEMO_TERMINATE_H_INCLUDED */

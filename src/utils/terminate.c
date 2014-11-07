@@ -17,21 +17,12 @@
  * along with Tocc-nemo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils/memory_utils.h"
-
-#include <stdio.h>
-#include <utils/terminate.h>
+#include "utils/terminate.h"
+#include <gtk/gtk.h>
 
 
-void* allocate_memory(size_t size)
+void tocc_nemo_terminate()
 {
-  void* result = malloc(size);
-
-  if (result == NULL)
-  {
-    fputs("Could not allocate memory\n", stderr);
-    tocc_nemo_terminate();
-  }
-
-  return result;
+  // Trying to quite the Gtk main loop, if any.
+  gtk_main_quit();
 }

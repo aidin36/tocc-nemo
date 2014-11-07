@@ -17,21 +17,25 @@
  * along with Tocc-nemo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils/memory_utils.h"
+#ifndef TOCC_NEMO_LIBTOCC_WRAPPER_H_INCLUDED
+#define TOCC_NEMO_LIBTOCC_WRAPPER_H_INCLUDED
 
-#include <stdio.h>
-#include <utils/terminate.h>
+/*
+ * It contains some functions that wraps libtocc's API, so it can be
+ * use in C.
+ */
 
+/*
+ * Imports specified files into Tocc, and assigned the specified
+ * tags into them.
+ */
+#ifdef __cplusplus
+extern "C"
+#endif
+void tocc_nemo_libtocc_import(char* base_path,
+                              char** files_array,
+                              int files_array_size,
+                              char** tags_array,
+                              int tags_array_size);
 
-void* allocate_memory(size_t size)
-{
-  void* result = malloc(size);
-
-  if (result == NULL)
-  {
-    fputs("Could not allocate memory\n", stderr);
-    tocc_nemo_terminate();
-  }
-
-  return result;
-}
+#endif /* TOCC_NEMO_LIBTOCC_WRAPPER_H_INCLUDED */

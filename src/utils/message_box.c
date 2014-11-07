@@ -17,21 +17,21 @@
  * along with Tocc-nemo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utils/memory_utils.h"
+#include "utils/message_box.h"
 
-#include <stdio.h>
-#include <utils/terminate.h>
+#include <gtk/gtk.h>
 
 
-void* allocate_memory(size_t size)
+void tocc_nemo_show_error(const char* message)
 {
-  void* result = malloc(size);
+  GtkWidget* message_dialog;
 
-  if (result == NULL)
-  {
-    fputs("Could not allocate memory\n", stderr);
-    tocc_nemo_terminate();
-  }
-
-  return result;
+  message_dialog = gtk_message_dialog_new(NULL,
+                                          0,
+                                          GTK_MESSAGE_ERROR,
+                                          GTK_BUTTONS_OK,
+                                          "%s",
+                                          message);
+  gtk_dialog_run(GTK_DIALOG(message_dialog));
+  gtk_widget_destroy(message_dialog);
 }

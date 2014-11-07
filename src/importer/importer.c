@@ -21,17 +21,22 @@
 #include <string.h>
 #include <stdbool.h>
 #include "utils/memory_utils.h"
+#include "libtocc_wrapper/libtocc_wrapper.h"
 
 
 void tocc_nemo_import_files(char* base_path,
                             char** files_array,
-                            int file_array_size,
+                            int files_array_size,
                             char* tags_string)
 {
   char** tags_array;
   int tags_array_size = parse_tags(tags_string, &tags_array);
 
-  // TODO: Do import.
+  tocc_nemo_libtocc_import(base_path,
+                           files_array,
+                           files_array_size,
+                           tags_array,
+                           tags_array_size);
 
   free(tags_array);
 }

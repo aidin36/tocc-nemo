@@ -103,6 +103,9 @@ static void on_tocc_import_activate(NemoMenuItem* item,
 
   // Showing the import dialog to user.
   tocc_nemo_importer_dialog_show(files_array, files_size);
+
+  // Freeing allocated memory.
+  free(files_array);
 }
 
 static void on_tocc_item_data_destroyed(gpointer data)
