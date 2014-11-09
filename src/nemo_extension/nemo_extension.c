@@ -25,8 +25,7 @@
 
 #include <stdlib.h>
 #include <libnemo-extension/nemo-menu-provider.h>
-#include <orbit/orb-core/orb-core.h>
-#include <orbit/orb-core/allocators.h>
+#include <orbit/orb-core/corba-typecode-type.h>
 
 #include "utils/memory_utils.h"
 #include "importer/main_dialog.h"
