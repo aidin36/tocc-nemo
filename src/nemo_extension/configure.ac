@@ -47,6 +47,18 @@ AC_SEARCH_LIBS([libtocc_exists], [tocc], [], [AC_MSG_ERROR([Could not find libto
 # Changing back the language to C
 AC_LANG_POP
 
+# Geting nemo extensions directory
+AC_MSG_CHECKING([for nemo extension directory])
+if test -n "$with_nemo_extension_dir"; then
+  NEMO_EXTENSION_DIR=$with_nemo_extension_dir
+else
+  NEMO_EXTENSION_DIR=`$PKG_CONFIG --variable=extensiondir libnemo-extension`
+fi
+if test -z "$NEMO_EXTENSION_DIR"; then
+  NEMO_EXTENSION_DIR='${exec_prefix}/lib/nemo/extension-3.0'
+fi
+AC_MSG_RESULT([${NEMO_EXTENSION_DIR}])
+AC_SUBST(NEMO_EXTENSION_DIR)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
