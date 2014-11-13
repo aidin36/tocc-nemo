@@ -33,7 +33,6 @@ PKG_CHECK_MODULES(GTK, gtk+-2.0)
 # Checking for libnemo-extension
 PKG_CHECK_MODULES(NEMO_EXTENSION, libnemo-extension)
 # Checking for Orbit headers.
-#AC_CHECK_HEADER([orbit/orb-core/corba-typecode-type.h], [], [AC_MSG_ERROR([Could not find Orbit headers. Usually, you need to install liborbit2-dev package to fix this. Or if you did, consider adding its path to CPPFLAGS and CFLAGS. i.e. CPPFLAGS=-I/usr/include/orbit-2.0/ CFLAGS=-I/usr/include/orbit-2.0/])])
 PKG_CHECK_MODULES(ORBIT, ORBit-2.0)
 
 # Checking for libtocc.
