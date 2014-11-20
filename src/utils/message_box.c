@@ -28,7 +28,7 @@ void tocc_nemo_show_error(const char* message)
 {
   GtkWidget* message_dialog;
 
-  char* message_copy = malloc(sizeof(char*) * strlen(message) + 1);
+  char* message_copy = malloc(sizeof(char*) * (strlen(message) + 1));
   strncpy(message_copy, message, strlen(message));
 
   message_dialog = gtk_message_dialog_new(NULL,
