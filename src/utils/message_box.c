@@ -19,6 +19,8 @@
 
 #include "utils/message_box.h"
 
+#include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 
 
@@ -26,12 +28,18 @@ void tocc_nemo_show_error(const char* message)
 {
   GtkWidget* message_dialog;
 
+  char* message_copy = malloc(sizeof(char*) * strlen(message) + 1);
+  strncpy(message_copy, message, strlen(message));
+
   message_dialog = gtk_message_dialog_new(NULL,
                                           0,
                                           GTK_MESSAGE_ERROR,
                                           GTK_BUTTONS_OK,
                                           "%s",
-                                          message);
+                                          message_copy);
   gtk_dialog_run(GTK_DIALOG(message_dialog));
   gtk_widget_destroy(message_dialog);
+
+  free(message_copy);
 }
+
