@@ -18,6 +18,8 @@
  */
 
 #include "importer/importer.h"
+
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include "utils/memory_utils.h"
@@ -29,8 +31,12 @@ void tocc_nemo_import_files(char* base_path,
                             int files_array_size,
                             char* tags_string)
 {
+  char* tags_string_copy;
   char** tags_array;
   int tags_array_size = parse_tags(tags_string, &tags_array);
+
+  tags_string_copy = malloc(sizeof(char*) * (strlen(tags_string) + 1));
+  strncpy(tags_string_copy, tags_string, strlen(tags_string));
 
   tocc_nemo_libtocc_import(base_path,
                            files_array,
@@ -38,6 +44,7 @@ void tocc_nemo_import_files(char* base_path,
                            tags_array,
                            tags_array_size);
 
+  free(tags_string_copy);
   free(tags_array);
 }
 
