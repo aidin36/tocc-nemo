@@ -26,12 +26,14 @@
 #include "utils/terminate.h"
 #include "utils/memory_utils.h"
 #include "utils/message_box.h"
+#include "utils/file_utils.h"
 
 
 struct ClickedButtonData
 {
-  GtkWidget* tags_entry;
   GtkWidget* base_path_entry;
+  GtkWidget* title_entry;
+  GtkWidget* tags_entry;
   char** files_array;
   int array_size;
 };
@@ -133,11 +135,25 @@ void tocc_nemo_import_clicked(GtkButton* button, gpointer user_data)
 
   const char* base_path_string = gtk_entry_buffer_get_text(entry_buffer);
 
+  // Reading title.
+  const char* title_string = "";
+  if (data->array_size == 1)
+  {
+    // If there was exactly one file, user can set title of the file.
+    // If not, we send title as empty string, so it will be auto-assigned.
+    entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(data->title_entry));
+    if (gtk_entry_buffer_get_length(entry_buffer) > 0)
+    {
+      title_string = gtk_entry_buffer_get_text(entry_buffer);
+    }
+  }
+
   // Importing files into Tocc.
   tocc_nemo_import_files(base_path_string,
                          data->files_array,
                          data->array_size,
-                         tags_string);
+                         tags_string,
+                         title_string);
 
   // Terminating application.
   gtk_main_quit();
@@ -148,6 +164,7 @@ void tocc_nemo_importer_dialog_show(char** files_array, int array_size)
 {
   GtkWidget* window;
   GtkWidget* label;
+  GtkWidget* title_entry;
   GtkWidget* tags_entry;
   GtkWidget* base_path_entry;
   GtkWidget* main_box;
@@ -200,7 +217,27 @@ void tocc_nemo_importer_dialog_show(char** files_array, int array_size)
   gtk_box_pack_start(GTK_BOX(hbox), base_path_entry, TRUE, TRUE, 3);
   gtk_box_pack_start(GTK_BOX(main_box), hbox, FALSE, FALSE, 5);
 
-  // Creating third line: Tags Label and Entry.
+  // Next line: Title label and Entry.
+  hbox = gtk_hbox_new(FALSE, 3);
+  label = gtk_label_new("Title:");
+  title_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(title_entry), 250);
+  gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox), title_entry, TRUE, TRUE, 3);
+  gtk_box_pack_start(GTK_BOX(main_box), hbox, FALSE, FALSE, 5);
+  if (array_size == 1)
+  {
+    // Setting text of title entry.
+    gtk_entry_set_text(GTK_ENTRY(title_entry), tocc_nemo_get_file_name(files_array[0]));
+  }
+  else
+  {
+    // Multiple files.
+    gtk_entry_set_text(GTK_ENTRY(title_entry), "(Multiple Files)");
+    gtk_widget_set_sensitive(GTK_WIDGET(title_entry), FALSE);
+  }
+
+  // Next line: Tags Label and Entry.
   hbox = gtk_hbox_new(FALSE, 3);
   label = gtk_label_new("Tags:");
   tags_entry = gtk_entry_new();
@@ -211,8 +248,9 @@ void tocc_nemo_importer_dialog_show(char** files_array, int array_size)
 
   // Creating last line: Buttons.
   struct ClickedButtonData clicked_button_data;
-  clicked_button_data.tags_entry = tags_entry;
   clicked_button_data.base_path_entry = base_path_entry;
+  clicked_button_data.title_entry = title_entry;
+  clicked_button_data.tags_entry = tags_entry;
   clicked_button_data.files_array = files_array;
   clicked_button_data.array_size = array_size;
 

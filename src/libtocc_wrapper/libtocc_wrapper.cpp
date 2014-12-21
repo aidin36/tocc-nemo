@@ -35,7 +35,8 @@ void tocc_nemo_libtocc_import(char* base_path,
                               char** files_array,
                               int files_array_size,
                               char** tags_array,
-                              int tags_array_size)
+                              int tags_array_size,
+                              char* title)
 {
   try
   {
@@ -53,7 +54,7 @@ void tocc_nemo_libtocc_import(char* base_path,
     for (; i < files_array_size; i++)
     {
       libtocc_manager.import_file(files_array[i],
-                                  "",
+                                  title,
                                   "",
                                   &tags_collection);
     }

@@ -29,7 +29,8 @@
 void tocc_nemo_import_files(char* base_path,
                             char** files_array,
                             int files_array_size,
-                            char* tags_string)
+                            char* tags_string,
+                            char* title_string)
 {
   char* tags_string_copy;
   char** tags_array;
@@ -42,7 +43,8 @@ void tocc_nemo_import_files(char* base_path,
                            files_array,
                            files_array_size,
                            tags_array,
-                           tags_array_size);
+                           tags_array_size,
+                           title_string);
 
   free(tags_string_copy);
   free(tags_array);

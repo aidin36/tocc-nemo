@@ -17,26 +17,16 @@
  * along with Tocc-nemo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOCC_NEMO_LIBTOCC_WRAPPER_H_INCLUDED
-#define TOCC_NEMO_LIBTOCC_WRAPPER_H_INCLUDED
+#ifndef TOCC_NEMO_FILE_UTILS_H_INCLUDED
+#define TOCC_NEMO_FILE_UTILS_H_INCLUDED
 
 /*
- * It contains some functions that wraps libtocc's API, so it can be
- * use in C.
+ * Returns the file name in the specified path.
+ *
+ * Note that returned pointer is the pointer to
+ * the part of the `path' itself, not a new char*.
  */
+const char* tocc_nemo_get_file_name(const char* path);
 
-/*
- * Imports specified files into Tocc, and assigned the specified
- * tags into them.
- */
-#ifdef __cplusplus
-extern "C"
-#endif
-void tocc_nemo_libtocc_import(char* base_path,
-                              char** files_array,
-                              int files_array_size,
-                              char** tags_array,
-                              int tags_array_size,
-                              char* title);
 
-#endif /* TOCC_NEMO_LIBTOCC_WRAPPER_H_INCLUDED */
+#endif /* TOCC_NEMO_FILE_UTILS_H_INCLUDED */

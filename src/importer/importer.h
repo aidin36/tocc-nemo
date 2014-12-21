@@ -27,7 +27,8 @@
 void tocc_nemo_import_files(char* base_path,
                             char** files_array,
                             int files_array_size,
-                            char* tags_string);
+                            char* tags_string,
+                            char* title);
 
 
 #endif /* TOCC_NEMO_IMPORTER_H_INCLUDED */
